@@ -1,0 +1,7 @@
+{
+    "unsafe_threshold": 0.37,
+    "caution_threshold": 0.35,
+    "postprocess_min_area": 25,
+    "postprocess_close_kernel": 3,
+    "postprocess_dilate_kernel": 3
+}
