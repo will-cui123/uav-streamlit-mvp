@@ -947,11 +947,12 @@ safe_pct = percentages["safe"]
 caution_pct = percentages["caution"]
 unsafe_pct = percentages["unsafe"]
 
-metric_cols = st.columns(4)
+metric_cols = st.columns(5)
 metric_cols[0].metric("Dominant prediction", dominant_class.title())
 metric_cols[1].metric("Mean confidence", f"{mean_confidence * 100:.1f}%")
-metric_cols[2].metric("Unsafe pixels", f"{unsafe_pct:.1f}%")
+metric_cols[2].metric("Safe pixels", f"{safe_pct:.1f}%")
 metric_cols[3].metric("Caution pixels", f"{caution_pct:.1f}%")
+metric_cols[4].metric("Unsafe pixels", f"{unsafe_pct:.1f}%")
 
 view_cols = st.columns(3)
 with view_cols[0]:
