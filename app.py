@@ -673,6 +673,25 @@ with st.sidebar:
 
     thresholds = load_thresholds(THRESHOLD_PATH)
 
+    # THRESHOLD SLIDER
+    st.caption("Adjust these if the model is over-predicting caution or unsafe.")
+
+    thresholds["caution_threshold"] = st.slider(
+        "Caution threshold",
+        min_value=0.10,
+        max_value=0.95,
+        value=float(thresholds.get("caution_threshold", 0.60)),
+        step=0.05,
+    )
+    
+    thresholds["unsafe_threshold"] = st.slider(
+        "Unsafe threshold",
+        min_value=0.10,
+        max_value=0.95,
+        value=float(thresholds.get("unsafe_threshold", 0.65)),
+        step=0.05,
+    )
+
     use_thresholds = st.checkbox(
         "Use tuned safety thresholds",
         value=True,
