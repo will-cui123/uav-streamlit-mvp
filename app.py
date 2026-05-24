@@ -219,26 +219,48 @@ def make_post_features(post_bgr: np.ndarray) -> np.ndarray:
 # Prediction and post-processing helpers
 # ============================================================
 
+# def predict_with_thresholds(
+#     probs: np.ndarray,
+#     unsafe_threshold: float = 0.37,
+#     caution_threshold: float = 0.35,
+# ) -> np.ndarray:
+#     """
+#     Convert class probabilities into labels using tuned thresholds.
+
+#     probs shape:
+#         N x C x H x W
+
+#     The model first chooses between safe/caution, then upgrades pixels to
+#     caution or unsafe when probabilities cross the selected thresholds.
+#     """
+#     caution_p = probs[:, 1]
+#     unsafe_p = probs[:, 2]
+
+#     pred = np.argmax(probs[:, 0:2], axis=1).astype(np.uint8)
+#     pred[caution_p >= caution_threshold] = 1
+#     pred[unsafe_p >= unsafe_threshold] = 2
+
+#     return pred
+
 def predict_with_thresholds(
     probs: np.ndarray,
-    unsafe_threshold: float = 0.37,
-    caution_threshold: float = 0.35,
+    unsafe_threshold: float = 0.65,
+    caution_threshold: float = 0.60,
 ) -> np.ndarray:
-    """
-    Convert class probabilities into labels using tuned thresholds.
-
-    probs shape:
-        N x C x H x W
-
-    The model first chooses between safe/caution, then upgrades pixels to
-    caution or unsafe when probabilities cross the selected thresholds.
-    """
+    safe_p = probs[:, 0]
     caution_p = probs[:, 1]
     unsafe_p = probs[:, 2]
 
-    pred = np.argmax(probs[:, 0:2], axis=1).astype(np.uint8)
-    pred[caution_p >= caution_threshold] = 1
-    pred[unsafe_p >= unsafe_threshold] = 2
+    # Start with normal model prediction across all 3 classes
+    pred = np.argmax(probs, axis=1).astype(np.uint8)
+
+    # Only mark caution/unsafe if they pass the user-selected threshold
+    pred[(caution_p >= caution_threshold) & (caution_p > safe_p)] = 1
+    pred[(unsafe_p >= unsafe_threshold) & (unsafe_p > safe_p)] = 2
+
+    # If neither caution nor unsafe is strong enough, default to safe
+    uncertain = (caution_p < caution_threshold) & (unsafe_p < unsafe_threshold)
+    pred[uncertain] = 0
 
     return pred
 
