@@ -448,6 +448,31 @@ def run_segmentation(
 
     pred_full = apply_demo_visual_smoothing(pred_full, original_rgb)
 
+    # Adjust probabilities to better reflect final smoothed prediction
+    adjusted_probs = probs[0].copy()
+    
+    # Resize vegetation mask to model resolution
+    small_rgb = cv2.resize(
+        original_rgb,
+        (IMG_SIZE, IMG_SIZE),
+        interpolation=cv2.INTER_AREA,
+    )
+    
+    rgb_float = small_rgb.astype(np.float32) / 255.0
+    r = rgb_float[:, :, 0]
+    g = rgb_float[:, :, 1]
+    b = rgb_float[:, :, 2]
+    
+    greenish = (g > r * 1.08) & (g > b * 1.05) & (g > 0.25)
+    
+    # Boost safe probability for vegetation
+    adjusted_probs[0][greenish] += 0.35
+    adjusted_probs[1][greenish] *= 0.55
+    adjusted_probs[2][greenish] *= 0.35
+    
+    # Re-normalise so probabilities still sum to 1
+    adjusted_probs /= adjusted_probs.sum(axis=0, keepdims=True)
+
     pixel_confidence_small = probs.max(axis=1)[0]
     mean_confidence = float(pixel_confidence_small.mean())
 
@@ -465,7 +490,8 @@ def run_segmentation(
     return {
         "original_rgb": original_rgb,
         "resized_rgb": resized_rgb,
-        "probabilities": probs[0],
+        # "probabilities": probs[0],
+        "probabilities": adjusted_probs,
         "confidence_map": pixel_confidence_small,
         "mean_confidence": mean_confidence,
         "pred_mask_small": pred_small,
