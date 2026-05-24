@@ -771,12 +771,19 @@ with st.sidebar:
         """
     )
 
+    st.markdown("---")
+
+    st.caption(
+        "© 2026 CTRL ALT ELITE"
+    )
+
 
 # ============================================================
 # Main page: problem explanation
 # ============================================================
 
 st.title("🛰️ UAV Landing Zone Safety Segmentation MVP")
+st.caption("ENGG2112 Project Demo")
 
 st.markdown(
     """
