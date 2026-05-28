@@ -816,7 +816,7 @@ st.markdown(
     This app demonstrates a machine learning model that labels each pixel in a UAV-style
     post-disaster image as **safe**, **caution** or **unsafe** for potential landing-zone
     assessment. Instead of only showing code, the app presents the model output visually
-    so a tutor or industry stakeholder can understand what the model is predicting.
+    so industry stakeholders can understand what the model is predicting.
     """
 )
 
