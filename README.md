@@ -2,7 +2,7 @@
 
 This is a Streamlit frontend MVP for an ENGG2112 machine learning project. It demonstrates a trained residual U-Net-style CNN that predicts a pixel-level safety label for a UAV/post-disaster image.
 
-The app is designed for a tutor or industry stakeholder, so it focuses on visual output and interpretation rather than only showing model code.
+The app is designed for industry stakeholders, so it focuses on visual output and interpretation rather than only showing model code.
 
 ## What the app does
 
